@@ -1,0 +1,147 @@
+{
+  "info": {
+    "name": "Alax POS Api Rest (Mock)",
+    "description": "Colección de los endpoints mockeados de Alax POS Api Rest.\n\nVariables:\n- baseUrl: host del mock (por defecto http://localhost:3101)\n- apiKey: API Key válida del POS (por defecto alax-demo-key)\n- dni: DNI de prueba (por defecto 12345678)\n\nLas URLs no llevan namespace/tenant: se montan tal cual sobre baseUrl.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3101", "type": "string" },
+    { "key": "apiKey", "value": "91202dd0-bd60-11ef-b483-a3f758f85781", "type": "string" },
+    { "key": "dni", "value": "12345678", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Verificación de Api Key",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/pos/checkApiKey",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pos", "checkApiKey"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{apiKey}}\"\n}"
+        },
+        "description": "Verifica si la Api Key enviada es correcta. 200 -> { valid_key: boolean }. Sin Api Key -> 403 (10500)."
+      }
+    },
+    {
+      "name": "2. Listado de cupones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/pos/coupons?apiKey={{apiKey}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pos", "coupons"],
+          "query": [{ "key": "apiKey", "value": "{{apiKey}}" }]
+        },
+        "description": "Lista todos los cupones vigentes para operar en el local. Api Key inválida -> 400 (10400)."
+      }
+    },
+    {
+      "name": "3. Venta / Validación de cupones",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/pos/sale",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pos", "sale"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{apiKey}}\",\n  \"dni\": {{dni}},\n  \"isDelivery\": false,\n  \"ticket\": \"TCK-0001\",\n  \"items\": [\n    {\n      \"description\": \"Hamburguesa Clásica\",\n      \"code\": \"H1\",\n      \"amount_sale\": 850,\n      \"amount_units\": 0,\n      \"quantity\": 1,\n      \"segment\": \"\"\n    },\n    {\n      \"description\": \"Cupón Alax\",\n      \"code\": \"WELCOME500\",\n      \"amount_sale\": -500,\n      \"amount_units\": 0,\n      \"quantity\": 1,\n      \"segment\": \"\"\n    }\n  ],\n  \"discounts\": [\n    { \"code\": \"WELCOME500\" }\n  ]\n}"
+        },
+        "description": "Registra una venta para la sumatoria de puntos y valida los cupones canjeados. Errores: 10400 (api key), 10401 (dni), 10402 (ticket duplicado), 10501 (sin descuentos)."
+      }
+    },
+    {
+      "name": "4. Verificación de cupones (checkDiscounts)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/pos/checkDiscounts",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pos", "checkDiscounts"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{apiKey}}\",\n  \"dni\": {{dni}},\n  \"items\": [\n    {\n      \"description\": \"Hamburguesa Clásica\",\n      \"code\": \"H1\",\n      \"amount_sale\": 850,\n      \"amount_units\": 0,\n      \"quantity\": 1,\n      \"segment\": \"\"\n    }\n  ],\n  \"discounts\": [\n    { \"code\": \"WELCOME500\" }\n  ],\n  \"add_user_discounts\": false\n}"
+        },
+        "description": "Verifica los cupones antes de cerrar la venta y devuelve discount_value (fuente de verdad del importe a descontar v2.0). Con add_user_discounts=true y discounts vacío, el sistema agrega los cupones del cliente automáticamente."
+      }
+    },
+    {
+      "name": "5. Verificación de usuario",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/pos/checkUser",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pos", "checkUser"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{apiKey}}\",\n  \"dni\": {{dni}}\n}"
+        },
+        "description": "Verifica que la persona que realiza la compra tenga un usuario registrado. 10400 (api key), 10401 (dni no registrado)."
+      }
+    },
+    {
+      "name": "6. Descuentos activados por cliente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/pos/getDiscountsByDocument?apiKey={{apiKey}}&dni={{dni}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pos", "getDiscountsByDocument"],
+          "query": [
+            { "key": "apiKey", "value": "{{apiKey}}" },
+            { "key": "dni", "value": "{{dni}}" }
+          ]
+        },
+        "description": "Lista los descuentos (cupones activados) vigentes que una persona tiene para validar en el local. Excluye cupones sin código externo."
+      }
+    },
+    {
+      "name": "7. API Eshop (Fenicio) - validateCoupon",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/eshop/validateCoupon",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "eshop", "validateCoupon"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"api_key\": \"eshop-key\",\n  \"coupon_code\": \"FEN-AB12CD\",\n  \"amount\": 5000\n}"
+        },
+        "description": "Valida cupones de eshop Fenicio mediante un código único. 200 valid:true devuelve datos del usuario; valid:false con motivo. 400 (10007) error de conexión."
+      }
+    },
+    {
+      "name": "8. Validar cupón (E-Commerce externos)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/pos/validateCoupon",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "pos", "validateCoupon"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apiKey\": \"{{apiKey}}\",\n  \"coupon_code\": \"WELCOME500\"\n}"
+        },
+        "description": "Valida cupones de e-commerce externos. 200 -> { result: 1 } si se validó con éxito. Errores: 10007 (db), 10400 (api key), 10901 (no encontrado), 10902 (no disponible)."
+      }
+    }
+  ]
+}
