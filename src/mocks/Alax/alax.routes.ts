@@ -54,7 +54,6 @@ export const registerAlaxRoutes = (
   // 5. Verificación de usuario
   server.post<{ Body: CheckUserBody }>(
     "/api/pos/checkUser",
-    { preHandler: apiKeyMiddleware },
     (request, reply) => controller.checkUser(request, reply),
   );
 

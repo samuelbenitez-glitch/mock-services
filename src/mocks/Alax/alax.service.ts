@@ -25,7 +25,7 @@ export const ALAX_ERRORS = {
   },
   USER_NOT_FOUND: {
     code: "10401",
-    msg: "No existe un usuario registrado con ese DNI.",
+    msg: "No se encontró un usuario registrado con ese DNI o su cuenta no fue activada.",
   },
   TICKET_ALREADY_REGISTERED: {
     code: "10402",
@@ -160,7 +160,7 @@ export class AlaxService {
           validation_id,
           eshop_discount_code: "",
           cumulative: false,
-          discount_value: 0,
+          discount_value: add_user_discounts ? 3000 : 1500,
           matched_products: [],
         };
       }
@@ -172,7 +172,7 @@ export class AlaxService {
         validation_id,
         eshop_discount_code: coupon.coupon_type === "amount" ? `ESHOP-${coupon.id}` : "",
         cumulative: false,
-        discount_value: coupon.discount,
+        discount_value: add_user_discounts ? 3000 : 2500,
         matched_products: items,
       };
     });
