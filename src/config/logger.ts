@@ -1,4 +1,5 @@
 import pino from "pino";
+import pretty from "pino-pretty";
 import { join } from "path";
 import { createStream } from "rotating-file-stream";
 
@@ -19,11 +20,20 @@ export const buildLogger = () => {
     return `${year}-${month}-${day}.log`;
   };
 
-  const stream = createStream(generator, {
+  const rotatingStream = createStream(generator, {
     interval: "1d",
     maxFiles: 10,
     path: join(process.cwd(), "storage", "logs"),
     compress: "gzip",
+  });
+
+  // Formatea cada entrada en modo legible (pretty) antes de escribirla al
+  // archivo rotado. colorize:false para no meter códigos ANSI en el .log.
+  const prettyStream = pretty({
+    colorize: false,
+    translateTime: "yyyy-mm-dd HH:MM:ss",
+    ignore: "pid,hostname",
+    destination: rotatingStream,
   });
 
   return pino(
@@ -35,7 +45,7 @@ export const buildLogger = () => {
         },
       },
     },
-    stream,
+    prettyStream,
   );
 };
 

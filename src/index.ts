@@ -4,6 +4,7 @@ import { buildContainer } from "./config/container";
 import { registerPedidosYaRoutes } from "./mocks/PedidosYa/pedidosya.routes";
 import { registerAlaxRoutes } from "./mocks/Alax/alax.routes";
 import { registerErrorHandler } from "./config/error-handler";
+import { registerRequestLogger } from "./config/request-logger";
 
 // Configurar dotenv
 dotenv.config();
@@ -19,6 +20,9 @@ const start = async () => {
     // Registrar el middleware global de captura de errores (log a archivo)
     const logger = container.resolve("logger");
     registerErrorHandler(server, logger);
+
+    // Registrar el middleware global de logueo de peticiones (log a archivo)
+    registerRequestLogger(server, logger);
 
     // Obtener los controladores del contenedor
     const pedidosYaController = container.resolve("pedidosYaController");
