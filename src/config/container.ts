@@ -9,6 +9,8 @@ import { PedidosYaService } from "../mocks/PedidosYa/pedidosya.service";
 import { PedidosYaController } from "../mocks/PedidosYa/pedidosya.controller";
 import { AlaxService } from "../mocks/Alax/alax.service";
 import { AlaxController } from "../mocks/Alax/alax.controller";
+import { BigPonsService } from "../mocks/BigPons/bigpons.service";
+import { BigPonsController } from "../mocks/BigPons/bigpons.controller";
 import { buildLogger, Logger } from "./logger";
 
 export interface Container {
@@ -17,6 +19,8 @@ export interface Container {
   pedidosYaController: PedidosYaController;
   alaxService: AlaxService;
   alaxController: AlaxController;
+  bigPonsService: BigPonsService;
+  bigPonsController: BigPonsController;
 }
 
 export const buildContainer = (): AwilixContainer<Container> => {
@@ -30,6 +34,8 @@ export const buildContainer = (): AwilixContainer<Container> => {
     pedidosYaController: asClass(PedidosYaController).singleton(),
     alaxService: asClass(AlaxService).singleton(),
     alaxController: asClass(AlaxController).singleton(),
+    bigPonsService: asClass(BigPonsService).singleton(),
+    bigPonsController: asClass(BigPonsController).singleton(),
   });
 
   return container;

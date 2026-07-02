@@ -3,6 +3,7 @@ import { createServer } from "./config/server";
 import { buildContainer } from "./config/container";
 import { registerPedidosYaRoutes } from "./mocks/PedidosYa/pedidosya.routes";
 import { registerAlaxRoutes } from "./mocks/Alax/alax.routes";
+import { registerBigPonsRoutes } from "./mocks/BigPons/bigpons.routes";
 import { registerErrorHandler } from "./config/error-handler";
 import { registerRequestLogger } from "./config/request-logger";
 
@@ -27,10 +28,12 @@ const start = async () => {
     // Obtener los controladores del contenedor
     const pedidosYaController = container.resolve("pedidosYaController");
     const alaxController = container.resolve("alaxController");
+    const bigPonsController = container.resolve("bigPonsController");
 
     // Registrar las rutas de los mocks
     registerPedidosYaRoutes(server, pedidosYaController);
     registerAlaxRoutes(server, alaxController);
+    registerBigPonsRoutes(server, bigPonsController);
 
     // Ruta de health check
     server.get("/health", async () => {

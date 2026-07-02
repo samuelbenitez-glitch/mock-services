@@ -128,13 +128,13 @@ export const MOCK_COUPONS: Coupon[] = [
 // Descuentos activados por cliente, indexados por DNI (como string).
 // Se excluyen cupones sin código externo (segun doc).
 export const MOCK_ACTIVATED_DISCOUNTS: Record<string, ActivatedDiscount[]> = {
-  "12345678": [
+  "11222333": [
     {
       cupon_id: 1,
       discount_id: 1001,
       cupon_name: "Descuento Bienvenida",
       coupon_type: "15%",
-      coupon_description: "Descuento de $500 en tu primera compra",
+      coupon_description: "Descuento de 15% en tu primera compra",
       code: "CODDESC2",
       discount: 500,
       discount_units: 0,
@@ -145,7 +145,7 @@ export const MOCK_ACTIVATED_DISCOUNTS: Record<string, ActivatedDiscount[]> = {
       discount_id: 1002,
       cupon_name: "Descuento Sin Código",
       coupon_type: "10%",
-      coupon_description: "Descuento de $500 en tu primera compra",
+      coupon_description: "Descuento de 10% en tu primera compra",
       code: "CODDESC1",
       discount: 500,
       discount_units: 0,

@@ -105,13 +105,14 @@ export class AlaxService {
     dni?: string | number,
   ): { user_registered: boolean; user_data: { first_name: string; last_name: string } } {
     this.assertApiKey(apiKey);
-    const user = this.getUser(dni ?? "");
-    if (!user) {
+    // Mock: DNI >= 50000000 => usuario registrado; en caso contrario, no encontrado.
+    const dniNumber = Number(dni);
+    if (!Number.isFinite(dniNumber) || dniNumber < 11222333) {
       throw new AlaxApiError(400, ALAX_ERRORS.USER_NOT_FOUND);
     }
     return {
       user_registered: true,
-      user_data: { first_name: user.first_name, last_name: user.last_name },
+      user_data: { first_name: "TestName", last_name: "TestLastName" },
     };
   }
 
