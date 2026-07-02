@@ -95,7 +95,9 @@ export class BigPonsService {
     return all.filter((c) => !used.has(c.code));
   }
 
-  // discount_value = porcentaje * (precio del producto del cupón presente en items).
+  // discount_value: requiere que el producto del cupón esté en items.
+  // - coupon_type "percentage": discount es un % → valor = % * (precio * cantidad).
+  // - otro (ej. "amount"): discount es un importe fijo → valor = discount (tope: total del producto).
   private calcularDiscountValue(coupon: BigPonsCoupon, items: SaleItem[]): number {
     const linea = items.find(
       (it) => it.code === coupon.productCode && it.amount_sale > 0,
@@ -104,7 +106,12 @@ export class BigPonsService {
       return 0;
     }
     const qty = linea.quantity && linea.quantity > 0 ? linea.quantity : 1;
-    return Math.round((coupon.discount / 100) * linea.amount_sale * qty);
+    const total = linea.amount_sale * qty;
+    if (coupon.coupon_type === "percentage") {
+      return Math.round((coupon.discount / 100) * total);
+    }
+    // Monto fijo: no puede superar el total del producto.
+    return Math.min(Math.round(coupon.discount), Math.round(total));
   }
 
   // ---- 1. POST /pos/checkApiKey ----
