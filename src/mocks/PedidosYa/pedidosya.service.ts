@@ -30,42 +30,6 @@ export const MOCK_CREDENTIALS = {
   password: "iRrI7x4q28",
 };
 
-/** Estados de orden aceptados por el endpoint /v2/order/status/{orderToken}. */
-export const ORDER_STATUSES = [
-  "order_accepted",
-  "order_rejected",
-  "order_picked_up",
-] as const;
-export type OrderStatus = (typeof ORDER_STATUSES)[number];
-
-/** Enum completo de razones de rechazo válidas (24 valores). Fuente: shared-components.yaml. */
-export const REJECT_REASONS = [
-  "ADDRESS_INCOMPLETE_MISSTATED",
-  "BAD_WEATHER",
-  "BLACKLISTED",
-  "CARD_READER_NOT_AVAILABLE",
-  "CLOSED",
-  "CONTENT_WRONG_MISLEADING",
-  "FOOD_QUALITY_SPILLAGE",
-  "FRAUD_PRANK",
-  "ITEM_UNAVAILABLE",
-  "LATE_DELIVERY",
-  "MENU_ACCOUNT_SETTINGS",
-  "MOV_NOT_REACHED",
-  "NO_COURIER",
-  "NO_PICKER",
-  "NO_RESPONSE",
-  "OUTSIDE_DELIVERY_AREA",
-  "TECHNICAL_PROBLEM",
-  "TEST_ORDER",
-  "TOO_BUSY",
-  "UNABLE_TO_FIND",
-  "UNABLE_TO_PAY",
-  "UNPROFESSIONAL_BEHAVIOUR",
-  "WILL_NOT_WORK_WITH_PLATFORM",
-  "WRONG_ORDER_ITEMS_DELIVERED",
-] as const;
-
 /** Body del /v2/order/status/{orderToken} (los campos varían según status). */
 export interface OrderStatusUpdateBody {
   status?: string;
@@ -90,6 +54,14 @@ export interface LoginResult {
 
 export class PedidosYaService {
   constructor(private logger: Logger) {}
+
+  /**
+   * Tokens que empiezan con "C": la respuesta alterna en cada consulta
+   * (401 → 200 → 401 → 200 ...). Estar en el Set significa que la última
+   * respuesta fue 401. Estado en memoria (se reinicia al reiniciar el server),
+   * por valor exacto del token.
+   */
+  private cTokenReturned401 = new Set<string>();
 
   private mockCatalogData: Record<string, CatalogItem[]> = {
     CHAIN001: [
@@ -205,72 +177,91 @@ export class PedidosYaService {
   // ─────────────────────── Order status update ───────────────────────
 
   /**
-   * POST /v2/order/status/{orderToken}. Valida auth y body según el `status`.
+   * POST /v2/order/status/{orderToken}.
    *
-   * Simulación de casos de error por convención en el orderToken (para QA):
-   *   *NOTFOUND*            → 400 ORDER_NOT_FOUND
-   *   *CONFLICT_RETRY*      → 409 currentState WAITING_FOR_ACKNOWLEDGEMENT (reintentable)
-   *   *CONFLICT_CANCELLED*  → 409 currentState CANCELLED (NO reintentable)
-   *   *FORBIDDEN*           → 403 FORBIDDEN (p.ej. integración indirecta)
-   *   *SERVERERROR*         → 500 INTERNAL_ERROR
-   *   (cualquier otro)      → 200 OK
+   * La respuesta se decide por MARCADORES (substring, case-insensitive) presentes en el
+   * orderToken, para poder disparar de forma predecible cada escenario de QA y validar el
+   * mapeo de status del backend MRO (PedidosYa error → 400, salvo 5xx → 500, salvo conflicto
+   * de transición reintentable → 503). Se evalúan en este orden de prioridad:
+   *
+   *   token contiene…        → mock responde                                    → MRO mapea a
+   *   ─────────────────────────────────────────────────────────────────────────────────────
+   *   NOTFOUND               → 400 { code: ORDER_NOT_FOUND }                    → 400
+   *   RETRYASSIGNED          → 409 { currentState: ASSIGNED_TO_TRANSPORT }      → 503 (reintentable)
+   *   RETRYWAITING           → 409 { currentState: WAITING_FOR_ACKNOWLEDGEMENT }→ 503 (reintentable)
+   *   TERMINAL               → 409 { currentState: CANCELLED }                  → 400 (no reintentable)
+   *   BADREQUEST             → 400 { code: INVALID_REQUEST }                    → 400
+   *   FORBIDDEN              → 403 { code: FORBIDDEN }                          → 400
+   *   SERVERERROR            → 500 { code: INTERNAL_ERROR }                     → 500
+   *   AUTHREFRESH            → alterna 401 POS_ERROR / 200 (testea refresh de token) → 204 tras refresh
+   *   (cualquier otro)       → 200 OK                                          → 204
+   *
+   * No valida el header Authorization ni el body (salvo el marcador AUTHREFRESH): el
+   * comportamiento depende únicamente del valor del token.
    */
   updateOrderStatus(
     orderToken: string,
-    authHeader: string | undefined,
+    _authHeader: string | undefined,
     body: OrderStatusUpdateBody,
   ): MockResponse {
-    const authError = this.checkAuth(authHeader);
-    if (authError) return authError;
+    const token = (orderToken || "").toUpperCase();
+    this.logger.info(
+      { orderToken, body },
+      "PEYA mock: order status update (respuesta según marcadores del token)",
+    );
 
-    // Casos de error simulados por el valor del orderToken.
-    const token = orderToken || "";
+    const ok: MockResponse = {
+      httpStatus: 200,
+      body: { message: "Order status successfully changed." },
+    };
+
     if (token.includes("NOTFOUND")) {
-      return this.error(400, "ORDER_NOT_FOUND", "La orden no existe");
+      return this.error(400, "ORDER_NOT_FOUND", "Order not found for the given token");
     }
-    if (token.includes("CONFLICT_CANCELLED")) {
-      return this.conflict("CANCELLED");
+    if (token.includes("RETRYASSIGNED")) {
+      return this.conflictTransicion("ASSIGNED_TO_TRANSPORT");
     }
-    if (token.includes("CONFLICT_RETRY")) {
-      return this.conflict("WAITING_FOR_ACKNOWLEDGEMENT");
+    if (token.includes("RETRYWAITING")) {
+      return this.conflictTransicion("WAITING_FOR_ACKNOWLEDGEMENT");
+    }
+    if (token.includes("TERMINAL")) {
+      return this.conflictTransicion("CANCELLED");
+    }
+    if (token.includes("BADREQUEST")) {
+      return this.error(400, "INVALID_REQUEST", "Invalid request payload");
     }
     if (token.includes("FORBIDDEN")) {
       return this.error(403, "FORBIDDEN", "User is not authorized for this chain");
     }
     if (token.includes("SERVERERROR")) {
-      return this.error(500, "INTERNAL_ERROR", "dummy error message");
+      return this.error(500, "INTERNAL_ERROR", "Unexpected server error");
     }
-
-    // Validación del body según el status.
-    const status = body?.status;
-    if (!status || !ORDER_STATUSES.includes(status as OrderStatus)) {
-      return this.error(
-        400,
-        "INVALID_ORDER_STATUS",
-        `status inválido. Válidos: ${ORDER_STATUSES.join(", ")}`,
-      );
-    }
-
-    if (status === "order_accepted" && !body.acceptanceTime) {
-      return this.error(400, "INVALID_REQUEST", "acceptanceTime es requerido para order_accepted");
-    }
-
-    if (status === "order_rejected") {
-      if (!body.reason) {
-        return this.error(400, "INVALID_REQUEST", "reason es requerido para order_rejected");
+    if (token.includes("AUTHREFRESH")) {
+      // Alterna en cada consulta del mismo token: si la última fue 401 → ahora 200, y viceversa.
+      if (this.cTokenReturned401.has(orderToken)) {
+        this.cTokenReturned401.delete(orderToken);
+        return ok;
       }
-      if (!REJECT_REASONS.includes(body.reason as (typeof REJECT_REASONS)[number])) {
-        return this.error(400, "INVALID_REQUEST", `reason inválido: ${body.reason}`);
-      }
+      this.cTokenReturned401.add(orderToken);
+      return this.error(401, "POS_ERROR", "Token inválido o expirado");
     }
 
-    this.logger.info(
-      { orderToken, status, body },
-      "PEYA mock: order status update OK",
-    );
+    return ok;
+  }
+
+  /**
+   * Conflicto de transición de estado (HTTP 409). Según la spec de PedidosYa, cuando la
+   * transición es inválida el body incluye el {@code currentState} de la orden; si es
+   * ASSIGNED_TO_TRANSPORT o WAITING_FOR_ACKNOWLEDGEMENT la operación debe reintentarse.
+   */
+  private conflictTransicion(currentState: string): MockResponse {
     return {
-      httpStatus: 200,
-      body: { message: "Order status successfully changed." },
+      httpStatus: 409,
+      body: {
+        code: "INVALID_ORDER_STATUS",
+        message: "The order status transition is not allowed from the current state.",
+        currentState,
+      },
     };
   }
 
@@ -355,18 +346,6 @@ export class PedidosYaService {
       return this.error(401, "POS_ERROR", "Token expirado");
     }
     return null;
-  }
-
-  /** 409 con currentState, según OrderStatusUpdateConflict. */
-  private conflict(currentState: string): MockResponse {
-    return {
-      httpStatus: 409,
-      body: {
-        code: "INVALID_REQUEST",
-        message: "Invalid order status transition",
-        currentState,
-      },
-    };
   }
 
   private error(httpStatus: number, code: string, message: string): MockResponse {

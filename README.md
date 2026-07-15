@@ -118,16 +118,20 @@ curl -X POST "http://localhost:3101/v2/order/status/ORD123" \
 # → 200 { "message": "Order status successfully changed." }
 ```
 
-**Casos de error simulados por el valor del `orderToken`** (para QA):
+**Casos simulados por MARCADOR en el `orderToken`** (substring, case-insensitive; para QA).
+Se evalúan en orden de prioridad y permiten validar el mapeo de status del backend MRO:
 
-| Si el orderToken contiene… | Respuesta |
-|---|---|
-| `NOTFOUND` | `400 { code: ORDER_NOT_FOUND }` |
-| `CONFLICT_RETRY` | `409 { currentState: WAITING_FOR_ACKNOWLEDGEMENT }` (reintentable) |
-| `CONFLICT_CANCELLED` | `409 { currentState: CANCELLED }` (NO reintentable) |
-| `FORBIDDEN` | `403 { code: FORBIDDEN }` (ej. integración indirecta) |
-| `SERVERERROR` | `500 { code: INTERNAL_ERROR }` |
-| (cualquier otro) | `200` OK |
+| Si el orderToken contiene… | Mock responde | MRO mapea a |
+|---|---|---|
+| `NOTFOUND` | `400 { code: ORDER_NOT_FOUND }` | `400` |
+| `RETRYASSIGNED` | `409 { currentState: ASSIGNED_TO_TRANSPORT }` (reintentable) | `503` |
+| `RETRYWAITING` | `409 { currentState: WAITING_FOR_ACKNOWLEDGEMENT }` (reintentable) | `503` |
+| `TERMINAL` | `409 { currentState: CANCELLED }` (NO reintentable) | `400` |
+| `BADREQUEST` | `400 { code: INVALID_REQUEST }` | `400` |
+| `FORBIDDEN` | `403 { code: FORBIDDEN }` | `400` |
+| `SERVERERROR` | `500 { code: INTERNAL_ERROR }` | `500` |
+| `AUTHREFRESH` | alterna `401 { code: POS_ERROR }` / `200` (testea refresh de token) | `204` (tras refresh) |
+| (cualquier otro) | `200 { message: "Order status successfully changed." }` | `204` |
 
 Sin header `Authorization` o `Bearer EXPIRED` → `401 { code: POS_ERROR }` (para testear el refresh de token).
 
