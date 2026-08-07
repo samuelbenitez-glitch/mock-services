@@ -11,6 +11,8 @@ import { AlaxService } from "../mocks/Alax/alax.service";
 import { AlaxController } from "../mocks/Alax/alax.controller";
 import { BigPonsService } from "../mocks/BigPons/bigpons.service";
 import { BigPonsController } from "../mocks/BigPons/bigpons.controller";
+import { UberEatsService } from "../mocks/UberEats/ubereats.service";
+import { UberEatsController } from "../mocks/UberEats/ubereats.controller";
 import { buildLogger, Logger } from "./logger";
 
 export interface Container {
@@ -21,6 +23,8 @@ export interface Container {
   alaxController: AlaxController;
   bigPonsService: BigPonsService;
   bigPonsController: BigPonsController;
+  uberEatsService: UberEatsService;
+  uberEatsController: UberEatsController;
 }
 
 export const buildContainer = (): AwilixContainer<Container> => {
@@ -36,6 +40,8 @@ export const buildContainer = (): AwilixContainer<Container> => {
     alaxController: asClass(AlaxController).singleton(),
     bigPonsService: asClass(BigPonsService).singleton(),
     bigPonsController: asClass(BigPonsController).singleton(),
+    uberEatsService: asClass(UberEatsService).singleton(),
+    uberEatsController: asClass(UberEatsController).singleton(),
   });
 
   return container;

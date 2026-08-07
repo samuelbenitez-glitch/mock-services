@@ -1,0 +1,6 @@
+{
+  "access_token": "IA.AQAAAAcpJ91-5LQEJpn2dVnQSjaerv7UkrQ_1U-EnDoJBSwzLgV3n4HcxiA9KD2ZBOZsztg5NRfFmIw_-X4BY3lycQe2YJn2I3d95JRHbzf5YZkhS8q0Opz06og1nk-TqAOUVSUe7ygsdcduS_im1YFXa06NTqNQyHe-9NBVWkjF4ngu0yhs",
+  "token_type": "Bearer",
+  "expires_in": 2592000,
+  "scope": "eats.order eats.store eats.store.orders.read eats.store.orders.restaurantdelivery.status"
+}
