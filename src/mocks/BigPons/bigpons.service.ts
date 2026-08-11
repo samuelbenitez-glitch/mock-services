@@ -1,9 +1,5 @@
 import { Logger } from "../../config/logger";
-import {
-  MOCK_COUPONS_BY_USER,
-  MOCK_USERS,
-  VALID_API_KEYS,
-} from "./bigpons.data";
+import { MOCK_COUPONS } from "./bigpons.data";
 import {
   ActivatedDiscount,
   BigPonsCoupon,
@@ -57,8 +53,9 @@ export class BigPonsService {
   // (ver §6.c/§9.7); se replica ese comportamiento y solo se usa para consumir cupones.
   private registeredTickets = new Set<string>();
 
-  // Cupones ya consumidos por usuario (sale los canjea → dejan de listarse). §9.7.
-  private consumedByUser = new Map<string, Set<string>>();
+  // Cupones ya consumidos (in-memory, global). /sale los canjea → dejan de listarse.
+  // Al reiniciar el proceso este Set se vacía, por lo que los cupones vuelven a aparecer.
+  private consumedCodes = new Set<string>();
 
   private validationCounter = 1;
 
@@ -66,97 +63,72 @@ export class BigPonsService {
 
   // ---- Helpers ----
 
-  private isValidApiKey(apiKey?: string): boolean {
-    return !!apiKey && VALID_API_KEYS.includes(apiKey);
+  // Cupones vigentes (aún no consumidos). No depende del dni ni del token: la misma
+  // lista global se devuelve para cualquier cliente.
+  private couponsOf(): BigPonsCoupon[] {
+    return MOCK_COUPONS.filter((c) => !this.consumedCodes.has(c.code));
   }
 
-  private assertApiKey(apiKey?: string): void {
-    if (!apiKey) {
-      throw new BigPonsApiError(403, BIGPONS_ERRORS.API_KEY_REQUIRED);
-    }
-    if (!this.isValidApiKey(apiKey)) {
-      throw new BigPonsApiError(400, BIGPONS_ERRORS.API_KEY_NOT_REGISTERED);
-    }
-  }
-
-  private consumed(dni: string): Set<string> {
-    let set = this.consumedByUser.get(dni);
-    if (!set) {
-      set = new Set<string>();
-      this.consumedByUser.set(dni, set);
-    }
-    return set;
-  }
-
-  // Cupones vigentes del usuario que aún no fueron consumidos.
-  private couponsOf(dni?: string | number): BigPonsCoupon[] {
-    const all = MOCK_COUPONS_BY_USER[String(dni ?? "")] || [];
-    const used = this.consumed(String(dni ?? ""));
-    return all.filter((c) => !used.has(c.code));
-  }
-
-  // discount_value: requiere que el producto del cupón esté en items.
-  // - coupon_type "percentage": discount es un % → valor = % * (precio * cantidad).
-  // - otro (ej. "amount"): discount es un importe fijo → valor = discount (tope: total del producto).
+  // discount_value: se calcula sobre el total de los ítems vendidos (líneas positivas).
+  // Versión simplificada: el cupón NO está atado a un productCode; el descuento aplica
+  // sobre lo enviado en items (amount_sale * quantity de las líneas con amount_sale > 0).
+  // - coupon_type "percentage": discount es un % → valor = % * total.
+  // - otro (ej. "amount"): discount es un importe fijo → valor = discount (tope: total).
   private calcularDiscountValue(coupon: BigPonsCoupon, items: SaleItem[]): number {
-    const linea = items.find(
-      (it) => it.code === coupon.productCode && it.amount_sale > 0,
-    );
-    if (!linea) {
+    const total = items
+      .filter((it) => it.amount_sale > 0)
+      .reduce((acc, it) => {
+        const qty = it.quantity && it.quantity > 0 ? it.quantity : 1;
+        return acc + it.amount_sale * qty;
+      }, 0);
+    if (total <= 0) {
       return 0;
     }
-    const qty = linea.quantity && linea.quantity > 0 ? linea.quantity : 1;
-    const total = linea.amount_sale * qty;
     if (coupon.coupon_type === "percentage") {
       return Math.round((coupon.discount / 100) * total);
     }
-    // Monto fijo: no puede superar el total del producto.
+    // Monto fijo: no puede superar el total de la compra.
     return Math.min(Math.round(coupon.discount), Math.round(total));
   }
 
   // ---- 1. POST /pos/checkApiKey ----
-  checkApiKey(apiKey?: string): { valid_key: boolean } {
-    if (!apiKey) {
-      throw new BigPonsApiError(403, BIGPONS_ERRORS.API_KEY_REQUIRED);
-    }
-    return { valid_key: this.isValidApiKey(apiKey) };
+  // Ya no se valida el token: cualquier apiKey se considera válida.
+  checkApiKey(_apiKey?: string): { valid_key: boolean } {
+    return { valid_key: true };
   }
 
   // ---- 2. POST /pos/checkUser (respuesta envuelta en "data") ----
+  // Ya no se valida el dni: cualquier documento devuelve un usuario mock.
   checkUser(
-    apiKey?: string,
-    dni?: string | number,
+    _apiKey?: string,
+    _dni?: string | number,
   ): {
     data: { user_registered: boolean; user_data: { first_name: string; last_name: string } };
   } {
-    this.assertApiKey(apiKey);
-    const user = MOCK_USERS[String(dni ?? "")];
-    if (!user) {
-      throw new BigPonsApiError(400, BIGPONS_ERRORS.USER_NOT_FOUND);
-    }
     return {
       data: {
         user_registered: true,
-        user_data: { first_name: user.first_name, last_name: user.last_name },
+        user_data: { first_name: "Cliente", last_name: "Mock" },
       },
     };
   }
 
   // ---- 3. GET /pos/getDiscountsByDocument ----
+  // Devuelve los cupones vigentes para cualquier token/dni.
   getDiscountsByDocument(
-    apiKey?: string,
-    dni?: string | number,
+    _apiKey?: string,
+    _dni?: string | number,
   ): { discounts: ActivatedDiscount[] } {
-    this.assertApiKey(apiKey);
     // Se omite productCode (interno): la API real no expone el id de producto.
-    const discounts = this.couponsOf(dni).map(({ productCode, ...pub }) => pub);
+    const discounts = this.couponsOf().map(({ productCode, ...pub }) => pub);
     return { discounts };
   }
 
-  // ---- 4. GET /pos/coupons (falla real: DEPENDENCY_ERROR / Validation failed, §4) ----
-  getCoupons(apiKey?: string): never {
-    this.assertApiKey(apiKey);
-    throw new BigPonsApiError(400, BIGPONS_ERRORS.DEPENDENCY_VALIDATION);
+  // ---- 4. GET /pos/coupons ----
+  // Devuelve los mismos cupones vigentes (sin validar token).
+  getCoupons(_apiKey?: string): { discounts: ActivatedDiscount[] } {
+    const discounts = this.couponsOf().map(({ productCode, ...pub }) => pub);
+    return { discounts };
   }
 
   // ---- 5. POST /pos/checkDiscounts ----
@@ -169,20 +141,14 @@ export class BigPonsService {
     discounts?: RequestedDiscount[];
     add_user_discounts?: boolean;
   }): { discounts: CheckedDiscount[] } {
-    const { apiKey, dni, items = [], discounts = [] } = params;
-    this.assertApiKey(apiKey);
-
-    // dni inexistente → DEPENDENCY_ERROR "Member not found" (§9.6).
-    if (!MOCK_USERS[String(dni ?? "")]) {
-      throw new BigPonsApiError(400, BIGPONS_ERRORS.MEMBER_NOT_FOUND);
-    }
+    const { items = [], discounts = [] } = params;
 
     const codes = discounts.map((d) => d.code).filter(Boolean);
     if (codes.length === 0) {
       return { discounts: [] };
     }
 
-    const disponibles = this.couponsOf(dni);
+    const disponibles = this.couponsOf();
 
     const result: CheckedDiscount[] = codes.map((code) => {
       const validation_id = this.validationCounter++;
@@ -201,6 +167,7 @@ export class BigPonsService {
 
       const discountValue = this.calcularDiscountValue(coupon, items);
       if (discountValue <= 0) {
+        // No se enviaron ítems válidos (líneas positivas) para calcular el descuento.
         return {
           code,
           status: "error",
@@ -211,32 +178,7 @@ export class BigPonsService {
         };
       }
 
-      // La línea negativa (código = code del cupón) debe coincidir con el valor real.
-      const lineaCupon = items.find(
-        (it) => it.code === code && it.amount_sale < 0,
-      );
-      if (!lineaCupon) {
-        // Sin línea negativa: la API igual devuelve el valor calculado con status error (§5.a).
-        return {
-          code,
-          status: "error",
-          error_msg: "Descuento no encontrado en los ítems enviados por la caja",
-          validation_id,
-          cumulative: false,
-          discount_value: discountValue,
-        };
-      }
-      if (Math.abs(lineaCupon.amount_sale) !== discountValue) {
-        return {
-          code,
-          status: "error",
-          error_msg: DISCOUNT_MSG.AMOUNT_MISMATCH,
-          validation_id,
-          cumulative: false,
-          discount_value: discountValue,
-        };
-      }
-
+      // Cupón válido + ítems válidos: devuelve el 10% (valor calculado) con status ok.
       return {
         code,
         status: "ok",
@@ -261,14 +203,9 @@ export class BigPonsService {
     items?: SaleItem[];
     discounts?: RequestedDiscount[];
   }): { discounts: SaleDiscount[]; success: boolean; successMsg: string } {
-    const { apiKey, dni, ticket, discounts = [] } = params;
-    this.assertApiKey(apiKey);
+    const { dni, ticket, discounts = [] } = params;
 
-    if (!MOCK_USERS[String(dni ?? "")]) {
-      throw new BigPonsApiError(400, BIGPONS_ERRORS.USER_NOT_FOUND);
-    }
-
-    const disponibles = this.couponsOf(dni);
+    const disponibles = this.couponsOf();
     const validated: SaleDiscount[] = discounts.map((d) => {
       const validation_id = this.validationCounter++;
       const coupon = disponibles.find((c) => c.code === d.code);
@@ -280,8 +217,8 @@ export class BigPonsService {
           validation_id,
         };
       }
-      // Consumir el cupón (deja de listarse en getDiscountsByDocument).
-      this.consumed(String(dni ?? "")).add(coupon.code);
+      // Consumir el cupón (deja de listarse en getDiscountsByDocument / coupons).
+      this.consumedCodes.add(coupon.code);
       return { code: d.code, status: "applied", error_msg: "", validation_id };
     });
 
