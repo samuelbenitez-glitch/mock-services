@@ -19,10 +19,13 @@ export class UberEatsService {
 
   /**
    * GET /v1/delivery/order/{order_id}. Devuelve una orden fija (no valida cabeceras).
-   * El {@code orderId} solicitado solo se loguea (la orden devuelta es siempre la misma).
+   * El {@code order.id} de la respuesta se reemplaza por el {@code orderId} recibido por parametro.
    */
   getOrder(orderId: string) {
-    this.logger.info({ orderId }, "UberEats mock: getOrder -> orden fija");
-    return uberOrder;
+    this.logger.info({ orderId }, "UberEats mock: getOrder -> orden fija (id dinamico)");
+    // Clonamos para no mutar el JSON importado (cache del modulo).
+    const order = structuredClone(uberOrder);
+    order.order.id = orderId;
+    return order;
   }
 }
