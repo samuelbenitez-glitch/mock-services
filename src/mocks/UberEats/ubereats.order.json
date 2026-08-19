@@ -1,8 +1,8 @@
 {
     "order": {
-        "id": "fcc01d08-c2de-4a78-8654-c9f8a45f26c1",
-        "display_id": "F26C1",
-        "state": "FAILED",
+        "id": "888967b2-e49d-4c8e-83e3-d547fb6f0b6b",
+        "display_id": "F0B6B",
+        "state": "ACCEPTED",
         "ordering_platform": "UBER_EATS",
         "store": {
             "id": "e20eab8f-c58d-4a5f-9f96-70fea90264a4",
@@ -42,44 +42,49 @@
                     "phone": {
                         "country_iso2": "US",
                         "number": "+54 351 536-2415",
-                        "pin_code": "373 17 321"
+                        "pin_code": "328 59 921"
                     }
-                }
+                },
+                "can_respond_to_fulfillment_issues": false
             }
         ],
         "deliveries": [
             {
-                "id": "9b2f5715-bb04-4f45-91f8-4fdde1224605",
-                "status": "SCHEDULED"
+                "id": "1d8513f9-348d-46b4-802b-a1902adf07e2",
+                "status": "SCHEDULED",
+                "estimated_pick_up_time": "2026-08-14T12:19:33-03:00",
+                "interaction_type": "DELIVER_TO_DOOR",
+                "estimated_drop_off_time": "2026-08-14T12:36:00-03:00"
             }
         ],
         "carts": [
             {
-                "id": "ef1cf773-ed77-4d90-9fc9-54337a554ed5",
+                "id": "26cefdfd-5516-4f01-ab24-50f409dab520",
+                "revision_id": "23b3fc77-cb17-5668-94e0-d41630100cd5",
                 "items": [
                     {
-                        "id": "PROD_1101",
-                        "cart_item_id": "13a2f072-b664-4267-bd35-e1995b8cbfbd",
+                        "id": "PROD_1103",
+                        "cart_item_id": "5c3dfc1f-16ff-49c1-8f96-b73beac68e5d",
                         "customer_id": "9bf08be9-e41a-5e63-956c-20269d951955",
-                        "external_data": "PROD_1101",
-                        "title": "Empanada Carne",
+                        "external_data": "PROD_1103",
+                        "title": "Empanada Verdura",
                         "quantity": {
                             "amount": 1,
                             "unit": "PIECE"
                         },
-                        "picture_url": "https://tb-static.uber.com/prod/image-proc/processed_images/e60ed48ffe9a04b73fc0a0297c4b6d76/d03e52b3c8af19d8fa8222e23efd9cfa.jpeg"
+                        "picture_url": "https://tb-static.uber.com/prod/image-proc/processed_images/33e108effd7172041c03f87970474c20/d03e52b3c8af19d8fa8222e23efd9cfa.jpeg"
                     },
                     {
-                        "id": "PROD_1404",
-                        "cart_item_id": "1531b5e7-6a92-4a96-8c5e-1fdea172a2d1",
+                        "id": "PROD_95288",
+                        "cart_item_id": "cbac21cd-4874-4ead-8ee8-398f2015e305",
                         "customer_id": "9bf08be9-e41a-5e63-956c-20269d951955",
-                        "external_data": "PROD_1404",
-                        "title": "Cappuccino",
+                        "external_data": "PROD_95288",
+                        "title": "Producto 10",
                         "quantity": {
                             "amount": 1,
                             "unit": "PIECE"
                         },
-                        "picture_url": "https://tb-static.uber.com/prod/image-proc/processed_images/bc08b891a6f6caa02ce587c07f084554/d03e52b3c8af19d8fa8222e23efd9cfa.jpeg"
+                        "picture_url": "https://tb-static.uber.com/prod/image-proc/processed_images/697328036127fca1c2e4f9cbf065db50/d03e52b3c8af19d8fa8222e23efd9cfa.jpeg"
                     }
                 ],
                 "include_single_use_items": false,
@@ -94,46 +99,46 @@
             "payment_detail": {
                 "order_total": {
                     "net": {
-                        "amount_e5": 1074400000,
+                        "amount_e5": 454500000,
                         "currency_code": "ARS",
-                        "formatted": "ARS 10,744.00"
+                        "formatted": "ARS 4,545.00"
                     },
                     "tax": {
-                        "amount_e5": 225600000,
+                        "amount_e5": 95500000,
                         "currency_code": "ARS",
-                        "formatted": "ARS 2,256.00"
+                        "formatted": "ARS 955.00"
                     },
                     "gross": {
-                        "amount_e5": 1300000000,
+                        "amount_e5": 550000000,
                         "currency_code": "ARS",
-                        "formatted": "ARS 13,000.00"
+                        "formatted": "ARS 5,500.00"
                     },
-                    "display_amount": "ARS 13,000.00",
+                    "display_amount": "ARS 5,500.00",
                     "is_tax_inclusive": true
                 },
                 "item_charges": {
                     "total": {
                         "net": {
-                            "amount_e5": 1074400000,
+                            "amount_e5": 454500000,
                             "currency_code": "ARS",
-                            "formatted": "ARS 10,744.00"
+                            "formatted": "ARS 4,545.00"
                         },
                         "tax": {
-                            "amount_e5": 225600000,
+                            "amount_e5": 95500000,
                             "currency_code": "ARS",
-                            "formatted": "ARS 2,256.00"
+                            "formatted": "ARS 955.00"
                         },
                         "gross": {
-                            "amount_e5": 1300000000,
+                            "amount_e5": 550000000,
                             "currency_code": "ARS",
-                            "formatted": "ARS 13,000.00"
+                            "formatted": "ARS 5,500.00"
                         },
-                        "display_amount": "ARS 13,000.00",
+                        "display_amount": "ARS 5,500.00",
                         "is_tax_inclusive": true
                     },
                     "price_breakdown": [
                         {
-                            "cart_item_id": "13a2f072-b664-4267-bd35-e1995b8cbfbd",
+                            "cart_item_id": "5c3dfc1f-16ff-49c1-8f96-b73beac68e5d",
                             "price_type": "ITEM",
                             "quantity": {
                                 "amount": 1,
@@ -141,23 +146,23 @@
                             },
                             "total": {
                                 "gross": {
-                                    "amount_e5": 800000000,
+                                    "amount_e5": 350000000,
                                     "currency_code": "ARS",
-                                    "formatted": "ARS 8,000.00"
+                                    "formatted": "ARS 3,500.00"
                                 },
-                                "display_amount": "ARS 8,000.00"
+                                "display_amount": "ARS 3,500.00"
                             },
                             "unit": {
                                 "gross": {
-                                    "amount_e5": 800000000,
+                                    "amount_e5": 350000000,
                                     "currency_code": "ARS",
-                                    "formatted": "ARS 8,000.00"
+                                    "formatted": "ARS 3,500.00"
                                 },
-                                "display_amount": "ARS 8,000.00"
+                                "display_amount": "ARS 3,500.00"
                             }
                         },
                         {
-                            "cart_item_id": "1531b5e7-6a92-4a96-8c5e-1fdea172a2d1",
+                            "cart_item_id": "cbac21cd-4874-4ead-8ee8-398f2015e305",
                             "price_type": "ITEM",
                             "quantity": {
                                 "amount": 1,
@@ -165,19 +170,19 @@
                             },
                             "total": {
                                 "gross": {
-                                    "amount_e5": 500000000,
+                                    "amount_e5": 200000000,
                                     "currency_code": "ARS",
-                                    "formatted": "ARS 5,000.00"
+                                    "formatted": "ARS 2,000.00"
                                 },
-                                "display_amount": "ARS 5,000.00"
+                                "display_amount": "ARS 2,000.00"
                             },
                             "unit": {
                                 "gross": {
-                                    "amount_e5": 500000000,
+                                    "amount_e5": 200000000,
                                     "currency_code": "ARS",
-                                    "formatted": "ARS 5,000.00"
+                                    "formatted": "ARS 2,000.00"
                                 },
-                                "display_amount": "ARS 5,000.00"
+                                "display_amount": "ARS 2,000.00"
                             }
                         }
                     ]
@@ -225,21 +230,21 @@
                     },
                     "order_total_excluding_promos": {
                         "net": {
-                            "amount_e5": 1074400000,
+                            "amount_e5": 454500000,
                             "currency_code": "ARS",
-                            "formatted": "ARS 10,744.00"
+                            "formatted": "ARS 4,545.00"
                         },
                         "tax": {
-                            "amount_e5": 225600000,
+                            "amount_e5": 95500000,
                             "currency_code": "ARS",
-                            "formatted": "ARS 2,256.00"
+                            "formatted": "ARS 955.00"
                         },
                         "gross": {
-                            "amount_e5": 1300000000,
+                            "amount_e5": 550000000,
                             "currency_code": "ARS",
-                            "formatted": "ARS 13,000.00"
+                            "formatted": "ARS 5,500.00"
                         },
-                        "display_amount": "ARS 13,000.00",
+                        "display_amount": "ARS 5,500.00",
                         "is_tax_inclusive": true
                     }
                 },
@@ -268,72 +273,72 @@
                 "breakdown": {
                     "items": [
                         {
-                            "instance_id": "13a2f072-b664-4267-bd35-e1995b8cbfbd",
+                            "instance_id": "5c3dfc1f-16ff-49c1-8f96-b73beac68e5d",
                             "description": "ITEM",
                             "gross_amount": {
-                                "amount_e5": 800000000,
+                                "amount_e5": 350000000,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 8,000.00"
+                                "formatted": "ARS 3,500.00"
                             },
                             "net_amount": {
-                                "amount_e5": 661157024,
+                                "amount_e5": 289256198,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 6,611.57"
+                                "formatted": "ARS 2,892.56"
                             },
                             "total_tax": {
-                                "amount_e5": 138842975,
+                                "amount_e5": 60743801,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 1,388.43"
+                                "formatted": "ARS 607.44"
                             },
                             "taxes": [
                                 {
                                     "is_inclusive": true,
                                     "rate": "0.21",
                                     "calculated_tax": {
-                                        "amount_e5": 138842975,
+                                        "amount_e5": 60743801,
                                         "currency_code": "ARS",
-                                        "formatted": "ARS 1,388.43"
+                                        "formatted": "ARS 607.44"
                                     },
                                     "taxable_amount": {
-                                        "amount_e5": 800000000,
+                                        "amount_e5": 350000000,
                                         "currency_code": "ARS",
-                                        "formatted": "ARS 8,000.00"
+                                        "formatted": "ARS 3,500.00"
                                     },
                                     "tax_remittance": "MERCHANT"
                                 }
                             ]
                         },
                         {
-                            "instance_id": "1531b5e7-6a92-4a96-8c5e-1fdea172a2d1",
+                            "instance_id": "cbac21cd-4874-4ead-8ee8-398f2015e305",
                             "description": "ITEM",
                             "gross_amount": {
-                                "amount_e5": 500000000,
+                                "amount_e5": 200000000,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 5,000.00"
+                                "formatted": "ARS 2,000.00"
                             },
                             "net_amount": {
-                                "amount_e5": 413223140,
+                                "amount_e5": 165289256,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 4,132.23"
+                                "formatted": "ARS 1,652.89"
                             },
                             "total_tax": {
-                                "amount_e5": 86776859,
+                                "amount_e5": 34710743,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 867.77"
+                                "formatted": "ARS 347.11"
                             },
                             "taxes": [
                                 {
                                     "is_inclusive": true,
                                     "rate": "0.21",
                                     "calculated_tax": {
-                                        "amount_e5": 86776859,
+                                        "amount_e5": 34710743,
                                         "currency_code": "ARS",
-                                        "formatted": "ARS 867.77"
+                                        "formatted": "ARS 347.11"
                                     },
                                     "taxable_amount": {
-                                        "amount_e5": 500000000,
+                                        "amount_e5": 200000000,
                                         "currency_code": "ARS",
-                                        "formatted": "ARS 5,000.00"
+                                        "formatted": "ARS 2,000.00"
                                     },
                                     "tax_remittance": "MERCHANT"
                                 }
@@ -342,47 +347,47 @@
                     ],
                     "fees": [
                         {
-                            "instance_id": "13a2f072-b664-4267-bd35-e1995b8cbfbd",
+                            "instance_id": "5c3dfc1f-16ff-49c1-8f96-b73beac68e5d",
                             "description": "SERVICE_FEE",
                             "gross_amount": {
-                                "amount_e5": 32000000,
+                                "amount_e5": 16545460,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 320.00"
+                                "formatted": "ARS 165.45"
                             },
                             "net_amount": {
-                                "amount_e5": 26446280,
+                                "amount_e5": 13673930,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 264.46"
+                                "formatted": "ARS 136.74"
                             },
                             "total_tax": {
-                                "amount_e5": 5553720,
+                                "amount_e5": 2871530,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 55.54"
+                                "formatted": "ARS 28.72"
                             },
                             "taxes": [
                                 {
                                     "is_inclusive": true,
                                     "rate": "0.21",
                                     "calculated_tax": {
-                                        "amount_e5": 5553720,
+                                        "amount_e5": 2871530,
                                         "currency_code": "ARS",
-                                        "formatted": "ARS 55.54"
+                                        "formatted": "ARS 28.72"
                                     }
                                 }
                             ]
                         },
                         {
-                            "instance_id": "13a2f072-b664-4267-bd35-e1995b8cbfbd",
+                            "instance_id": "5c3dfc1f-16ff-49c1-8f96-b73beac68e5d",
                             "description": "DELIVERY_FEE",
                             "gross_amount": {
-                                "amount_e5": 61476920,
+                                "amount_e5": 63572730,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 614.77"
+                                "formatted": "ARS 635.73"
                             },
                             "net_amount": {
-                                "amount_e5": 61476920,
+                                "amount_e5": 63572730,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 614.77"
+                                "formatted": "ARS 635.73"
                             },
                             "total_tax": {
                                 "amount_e5": 0,
@@ -402,47 +407,47 @@
                             ]
                         },
                         {
-                            "instance_id": "1531b5e7-6a92-4a96-8c5e-1fdea172a2d1",
+                            "instance_id": "cbac21cd-4874-4ead-8ee8-398f2015e305",
                             "description": "SERVICE_FEE",
                             "gross_amount": {
-                                "amount_e5": 20000000,
+                                "amount_e5": 9454540,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 200.00"
+                                "formatted": "ARS 94.55"
                             },
                             "net_amount": {
-                                "amount_e5": 16528930,
+                                "amount_e5": 7813670,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 165.29"
+                                "formatted": "ARS 78.14"
                             },
                             "total_tax": {
-                                "amount_e5": 3471070,
+                                "amount_e5": 1640870,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 34.71"
+                                "formatted": "ARS 16.41"
                             },
                             "taxes": [
                                 {
                                     "is_inclusive": true,
                                     "rate": "0.21",
                                     "calculated_tax": {
-                                        "amount_e5": 3471070,
+                                        "amount_e5": 1640870,
                                         "currency_code": "ARS",
-                                        "formatted": "ARS 34.71"
+                                        "formatted": "ARS 16.41"
                                     }
                                 }
                             ]
                         },
                         {
-                            "instance_id": "1531b5e7-6a92-4a96-8c5e-1fdea172a2d1",
+                            "instance_id": "cbac21cd-4874-4ead-8ee8-398f2015e305",
                             "description": "DELIVERY_FEE",
                             "gross_amount": {
-                                "amount_e5": 38423080,
+                                "amount_e5": 36327270,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 384.23"
+                                "formatted": "ARS 363.27"
                             },
                             "net_amount": {
-                                "amount_e5": 38423080,
+                                "amount_e5": 36327270,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 384.23"
+                                "formatted": "ARS 363.27"
                             },
                             "total_tax": {
                                 "amount_e5": 0,
@@ -466,16 +471,35 @@
             },
             "tender_types": null
         },
-        "status": "COMPLETED",
-        "failure_info": {
-            "failure_attributed_to_party": "UNKNOWN",
-            "reason": "DELIVERY_FAILED",
-            "description": "Order was canceled by the delivery partner",
-            "will_merchant_be_paid": true
+        "status": "ACTIVE",
+        "preparation_status": "PREPARING",
+        "estimated_unfulfilled_at": "2026-08-14T12:00:07-03:00",
+        "is_order_accuracy_risk": false,
+        "preparation_time": {
+            "ready_for_pickup_time_secs": 1798,
+            "source": "MERCHANT_PROVIDED",
+            "ready_for_pickup_time": "2026-08-14T12:19:33-03:00"
         },
-        "completed_time": "2026-07-29T18:07:34-03:00",
+        "action_eligibility": {
+            "adjust_ready_for_pickup_time": {
+                "is_eligible": true,
+                "reason": "ORDER_VALID_STATE"
+            },
+            "mark_out_of_item": {
+                "is_eligible": true,
+                "reason": "ORDER_VALID_STATE"
+            },
+            "cancel": {
+                "is_eligible": true,
+                "reason": "ORDER_VALID_STATE"
+            },
+            "mark_cannot_fulfill": {
+                "is_eligible": false,
+                "reason": "NO_ORDER_INSTRUCTIONS"
+            }
+        },
         "fulfillment_type": "DELIVERY_BY_UBER",
-        "created_time": "2026-07-29T16:27:04-03:00",
-        "has_membership_pass": true
+        "created_time": "2026-08-14T11:48:37-03:00",
+        "has_membership_pass": false
     }
 }

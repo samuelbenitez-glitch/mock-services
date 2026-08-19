@@ -6,6 +6,7 @@ import { registerAlaxRoutes } from "./mocks/Alax/alax.routes";
 import { registerBigPonsRoutes } from "./mocks/BigPons/bigpons.routes";
 import { registerUberEatsRoutes } from "./mocks/UberEats/ubereats.routes";
 import { registerDeliveryRoutes } from "./mocks/Delivery/delivery.routes";
+import { registerDoctorRoutes } from "./mocks/Doctor/doctor.routes";
 import { registerErrorHandler } from "./config/error-handler";
 import { registerRequestLogger } from "./config/request-logger";
 
@@ -33,6 +34,7 @@ const start = async () => {
     const bigPonsController = container.resolve("bigPonsController");
     const uberEatsController = container.resolve("uberEatsController");
     const deliveryController = container.resolve("deliveryController");
+    const doctorController = container.resolve("doctorController");
 
     // Registrar las rutas de los mocks
     registerPedidosYaRoutes(server, pedidosYaController);
@@ -40,6 +42,7 @@ const start = async () => {
     registerBigPonsRoutes(server, bigPonsController);
     registerUberEatsRoutes(server, uberEatsController);
     registerDeliveryRoutes(server, deliveryController);
+    registerDoctorRoutes(server, doctorController);
 
     // Ruta de health check
     server.get("/health", async () => {

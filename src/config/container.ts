@@ -15,6 +15,8 @@ import { UberEatsService } from "../mocks/UberEats/ubereats.service";
 import { UberEatsController } from "../mocks/UberEats/ubereats.controller";
 import { DeliveryService } from "../mocks/Delivery/delivery.service";
 import { DeliveryController } from "../mocks/Delivery/delivery.controller";
+import { DoctorService } from "../mocks/Doctor/doctor.service";
+import { DoctorController } from "../mocks/Doctor/doctor.controller";
 import { buildLogger, Logger } from "./logger";
 
 export interface Container {
@@ -29,6 +31,8 @@ export interface Container {
   uberEatsController: UberEatsController;
   deliveryService: DeliveryService;
   deliveryController: DeliveryController;
+  doctorService: DoctorService;
+  doctorController: DoctorController;
 }
 
 export const buildContainer = (): AwilixContainer<Container> => {
@@ -48,6 +52,8 @@ export const buildContainer = (): AwilixContainer<Container> => {
     uberEatsController: asClass(UberEatsController).singleton(),
     deliveryService: asClass(DeliveryService).singleton(),
     deliveryController: asClass(DeliveryController).singleton(),
+    doctorService: asClass(DoctorService).singleton(),
+    doctorController: asClass(DoctorController).singleton(),
   });
 
   return container;
