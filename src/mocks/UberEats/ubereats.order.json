@@ -109,11 +109,11 @@
                         "formatted": "ARS 955.00"
                     },
                     "gross": {
-                        "amount_e5": 550000000,
+                        "amount_e5": 550083000,
                         "currency_code": "ARS",
-                        "formatted": "ARS 5,500.00"
+                        "formatted": "ARS 5,500.83"
                     },
-                    "display_amount": "ARS 5,500.00",
+                    "display_amount": "ARS 5,500.83",
                     "is_tax_inclusive": true
                 },
                 "item_charges": {
@@ -129,11 +129,11 @@
                             "formatted": "ARS 955.00"
                         },
                         "gross": {
-                            "amount_e5": 550000000,
+                            "amount_e5": 550083000,
                             "currency_code": "ARS",
-                            "formatted": "ARS 5,500.00"
+                            "formatted": "ARS 5,500.83"
                         },
-                        "display_amount": "ARS 5,500.00",
+                        "display_amount": "ARS 5,500.83",
                         "is_tax_inclusive": true
                     },
                     "price_breakdown": [
@@ -146,19 +146,19 @@
                             },
                             "total": {
                                 "gross": {
-                                    "amount_e5": 350000000,
+                                    "amount_e5": 350033000,
                                     "currency_code": "ARS",
-                                    "formatted": "ARS 3,500.00"
+                                    "formatted": "ARS 3,500.33"
                                 },
-                                "display_amount": "ARS 3,500.00"
+                                "display_amount": "ARS 3,500.33"
                             },
                             "unit": {
                                 "gross": {
-                                    "amount_e5": 350000000,
+                                    "amount_e5": 350033000,
                                     "currency_code": "ARS",
-                                    "formatted": "ARS 3,500.00"
+                                    "formatted": "ARS 3,500.33"
                                 },
-                                "display_amount": "ARS 3,500.00"
+                                "display_amount": "ARS 3,500.33"
                             }
                         },
                         {
@@ -170,19 +170,19 @@
                             },
                             "total": {
                                 "gross": {
-                                    "amount_e5": 200000000,
+                                    "amount_e5": 200050000,
                                     "currency_code": "ARS",
-                                    "formatted": "ARS 2,000.00"
+                                    "formatted": "ARS 2,000.50"
                                 },
-                                "display_amount": "ARS 2,000.00"
+                                "display_amount": "ARS 2,000.50"
                             },
                             "unit": {
                                 "gross": {
-                                    "amount_e5": 200000000,
+                                    "amount_e5": 200050000,
                                     "currency_code": "ARS",
-                                    "formatted": "ARS 2,000.00"
+                                    "formatted": "ARS 2,000.50"
                                 },
-                                "display_amount": "ARS 2,000.00"
+                                "display_amount": "ARS 2,000.50"
                             }
                         }
                     ]
@@ -240,11 +240,11 @@
                             "formatted": "ARS 955.00"
                         },
                         "gross": {
-                            "amount_e5": 550000000,
+                            "amount_e5": 550083000,
                             "currency_code": "ARS",
-                            "formatted": "ARS 5,500.00"
+                            "formatted": "ARS 5,500.83"
                         },
-                        "display_amount": "ARS 5,500.00",
+                        "display_amount": "ARS 5,500.83",
                         "is_tax_inclusive": true
                     }
                 },
@@ -380,12 +380,12 @@
                             "instance_id": "5c3dfc1f-16ff-49c1-8f96-b73beac68e5d",
                             "description": "DELIVERY_FEE",
                             "gross_amount": {
-                                "amount_e5": 63572730,
+                                "amount_e5": 63573000,
                                 "currency_code": "ARS",
                                 "formatted": "ARS 635.73"
                             },
                             "net_amount": {
-                                "amount_e5": 63572730,
+                                "amount_e5": 63573000,
                                 "currency_code": "ARS",
                                 "formatted": "ARS 635.73"
                             },
@@ -440,14 +440,14 @@
                             "instance_id": "cbac21cd-4874-4ead-8ee8-398f2015e305",
                             "description": "DELIVERY_FEE",
                             "gross_amount": {
-                                "amount_e5": 36327270,
+                                "amount_e5": 36377000,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 363.27"
+                                "formatted": "ARS 363.77"
                             },
                             "net_amount": {
-                                "amount_e5": 36327270,
+                                "amount_e5": 36377000,
                                 "currency_code": "ARS",
-                                "formatted": "ARS 363.27"
+                                "formatted": "ARS 363.77"
                             },
                             "total_tax": {
                                 "amount_e5": 0,
