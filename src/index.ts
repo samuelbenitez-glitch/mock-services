@@ -8,6 +8,7 @@ import { registerUberEatsRoutes } from "./mocks/UberEats/ubereats.routes";
 import { registerDeliveryRoutes } from "./mocks/Delivery/delivery.routes";
 import { registerDoctorRoutes } from "./mocks/Doctor/doctor.routes";
 import { registerLocalGatewayRoutes } from "./mocks/LocalGateway/localgateway.routes";
+import { registerBilleteraRoutes } from "./mocks/Billetera/billetera.routes";
 import { registerErrorHandler } from "./config/error-handler";
 import { registerRequestLogger } from "./config/request-logger";
 
@@ -48,6 +49,11 @@ const start = async () => {
     // Gateway local (/v1/*) hacia las APIs Java locales y el gateway de staging
     if (process.env.LOCAL_GATEWAY_ENABLED === "true") {
       registerLocalGatewayRoutes(server, container.resolve("localGatewayController"));
+
+      // Billetera mock (MR-9298): saldo y estado del alta a elección; el resto de api-wallet sigue al fallback
+      if (process.env.MOCK_BILLETERA_ENABLED === "true") {
+        registerBilleteraRoutes(server, container.resolve("billeteraController"));
+      }
     }
 
     // Ruta de health check

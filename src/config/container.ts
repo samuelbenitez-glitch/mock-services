@@ -19,6 +19,8 @@ import { DoctorService } from "../mocks/Doctor/doctor.service";
 import { DoctorController } from "../mocks/Doctor/doctor.controller";
 import { LocalGatewayService } from "../mocks/LocalGateway/localgateway.service";
 import { LocalGatewayController } from "../mocks/LocalGateway/localgateway.controller";
+import { BilleteraService } from "../mocks/Billetera/billetera.service";
+import { BilleteraController } from "../mocks/Billetera/billetera.controller";
 import { buildLogger, Logger } from "./logger";
 
 export interface Container {
@@ -37,6 +39,8 @@ export interface Container {
   doctorController: DoctorController;
   localGatewayService: LocalGatewayService;
   localGatewayController: LocalGatewayController;
+  billeteraService: BilleteraService;
+  billeteraController: BilleteraController;
 }
 
 export const buildContainer = (): AwilixContainer<Container> => {
@@ -60,6 +64,8 @@ export const buildContainer = (): AwilixContainer<Container> => {
     doctorController: asClass(DoctorController).singleton(),
     localGatewayService: asClass(LocalGatewayService).singleton(),
     localGatewayController: asClass(LocalGatewayController).singleton(),
+    billeteraService: asClass(BilleteraService).singleton(),
+    billeteraController: asClass(BilleteraController).singleton(),
   });
 
   return container;
